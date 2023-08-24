@@ -1,26 +1,39 @@
 package com.kilanov.userswebservice.ui.controller;
 
+import com.kilanov.userswebservice.dto.UserDto;
+import com.kilanov.userswebservice.service.UserService;
 import com.kilanov.userswebservice.ui.requests.CreateUserRequest;
+import com.kilanov.userswebservice.ui.response.UserResponse;
 import jakarta.validation.Valid;
-import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static org.modelmapper.convention.MatchingStrategies.STRICT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/users")
 public class UsersController {
-    private Environment environment;
+    private UserService service;
 
-    public UsersController(Environment environment) {
-        this.environment = environment;
+    public UsersController(UserService service) {
+        this.service = service;
     }
 
-    @GetMapping("/status/check")
-    public String status() {
-        return "Working on " + environment.getProperty("local.server.port");
-    }
+    @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        var mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(STRICT);
+        var dto = mapper.map(request, UserDto.class);
+        var result = service.create(dto);
+        var response = mapper.map(result, UserResponse.class);
 
-    @PostMapping
-    public String createUser(@Valid @RequestBody CreateUserRequest request) {
-        return "";
+        return ResponseEntity.status(CREATED).body(response);
     }
 }
