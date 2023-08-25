@@ -26,8 +26,8 @@ import java.time.Instant;
 import java.util.Base64;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private UserService userService;
-    private Environment environment;
+    private final UserService userService;
+    private final Environment environment;
 
     public AuthenticationFilter(AuthenticationManager manager, UserService userService, Environment environment) {
         super(manager);

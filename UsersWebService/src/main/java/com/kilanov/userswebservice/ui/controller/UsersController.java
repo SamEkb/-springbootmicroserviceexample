@@ -8,10 +8,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.modelmapper.convention.MatchingStrategies.STRICT;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -23,6 +20,11 @@ public class UsersController {
 
     public UsersController(UserService service) {
         this.service = service;
+    }
+
+    @GetMapping("/status/check")
+    public String status() {
+        return "Working";
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},

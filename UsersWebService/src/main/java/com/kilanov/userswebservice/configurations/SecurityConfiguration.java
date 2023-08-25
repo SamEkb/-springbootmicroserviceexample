@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -33,22 +31,24 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    protected SecurityFilterChain configure(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.userDetailsService(userService)
                 .passwordEncoder(encoder);
 
         AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, environment);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService,
+                environment);
         authenticationFilter.setFilterProcessesUrl(environment.getProperty("login.url_path"));
 
         return http.csrf(AbstractHttpConfigurer::disable)
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                            auth.requestMatchers(mvcMatcherBuilder.pattern("/users")).permitAll();
+                            auth.requestMatchers(antMatcher("/users")).permitAll();
+                            auth.requestMatchers(antMatcher("/users/**")).permitAll();
                             auth.requestMatchers(antMatcher("/h2-console/**")).permitAll();
                         }
                 )
