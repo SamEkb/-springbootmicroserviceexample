@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:0}
+spring:
+  config:
+    import: optional:configserver:http://localhost:8012
+  cloud:
+    config:
+      name: config-server
+  application:
+    name: users-ws
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  datasource:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

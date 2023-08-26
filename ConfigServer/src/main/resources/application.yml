@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+         uri: git@github.com:SamEkb/PhotoAppConfiguration
+         passphrase: password
+         clone-on-start: true
+         default-label: main
+         ignore-local-ssh-settings: true
+         private-key: |
+                -----BEGIN RSA PRIVATE KEY-----
+         
+                -----END RSA PRIVATE KEY-----
+server:
+  port: 8012
