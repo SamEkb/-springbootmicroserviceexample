@@ -1,9 +1,18 @@
 spring:
   application:
     name: config-server
+  profiles:
+    active: native
+  rabbitmq:
+         host: localhost
+         port: 5672
+         username: guest
+         password: guest
   cloud:
     config:
       server:
+        native:
+          search-locations: file:///C:/projects/
         git:
          uri: git@github.com:SamEkb/PhotoAppConfiguration
          passphrase: password
@@ -12,7 +21,12 @@ spring:
          ignore-local-ssh-settings: true
          private-key: |
                 -----BEGIN RSA PRIVATE KEY-----
-         
+        
                 -----END RSA PRIVATE KEY-----
 server:
   port: 8012
+management:
+       endpoints:
+              web:
+                     exposure:
+                            include: bus-refresh
