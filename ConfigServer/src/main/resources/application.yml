@@ -2,7 +2,7 @@ spring:
   application:
     name: config-server
   profiles:
-    active: native
+    active: git
   rabbitmq:
          host: localhost
          port: 5672
@@ -21,7 +21,8 @@ spring:
          ignore-local-ssh-settings: true
          private-key: |
                 -----BEGIN RSA PRIVATE KEY-----
-        
+                Proc-Type: 4,ENCRYPTED
+                DEK-Info: DES-EDE3-CBC,C7B0415FC8D8FA8E
                 -----END RSA PRIVATE KEY-----
 server:
   port: 8012

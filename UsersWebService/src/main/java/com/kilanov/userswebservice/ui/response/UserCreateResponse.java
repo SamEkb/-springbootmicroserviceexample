@@ -1,19 +1,23 @@
 package com.kilanov.userswebservice.ui.response;
 
-import java.util.List;
+import java.io.Serial;
+import java.io.Serializable;
 
-public class UserResponse {
-    private String userId;
+public class UserCreateResponse implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1443323526075891401L;
     private String firstName;
     private String lastName;
     private String email;
-    private List<AlbumResponse> albums;
+    private String userId;
 
-    public String getUserId() {
-        return userId;
+    public UserCreateResponse() {
     }
 
-    public void setUserId(String userId) {
+    public UserCreateResponse(String firstName, String lastName, String email, String userId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.userId = userId;
     }
 
@@ -41,11 +45,11 @@ public class UserResponse {
         this.email = email;
     }
 
-    public List<AlbumResponse> getAlbums() {
-        return albums;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setAlbums(List<AlbumResponse> albums) {
-        this.albums = albums;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

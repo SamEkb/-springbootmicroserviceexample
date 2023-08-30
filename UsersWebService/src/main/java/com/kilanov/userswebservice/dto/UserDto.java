@@ -1,7 +1,10 @@
 package com.kilanov.userswebservice.dto;
 
+import com.kilanov.userswebservice.ui.response.AlbumResponse;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable {
 
@@ -13,18 +16,7 @@ public class UserDto implements Serializable {
     private String email;
     private String userId;
     private String encryptedPassword;
-
-    public UserDto() {
-    }
-
-    public UserDto(String firstName, String lastName, String password, String email, String userId, String encryptedPassword) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.email = email;
-        this.userId = userId;
-        this.encryptedPassword = encryptedPassword;
-    }
+    private List<AlbumResponse> albums;
 
     public String getFirstName() {
         return firstName;
@@ -72,5 +64,13 @@ public class UserDto implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+    public List<AlbumResponse> getAlbums() {
+        return albums;
+    }
+
+    public void setAlbums(List<AlbumResponse> albums) {
+        this.albums = albums;
     }
 }

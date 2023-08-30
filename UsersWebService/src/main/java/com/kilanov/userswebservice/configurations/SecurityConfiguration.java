@@ -4,7 +4,6 @@ import com.kilanov.userswebservice.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,9 +19,9 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    private UserService userService;
-    private Environment environment;
-    private BCryptPasswordEncoder encoder;
+    private final UserService userService;
+    private final Environment environment;
+    private final BCryptPasswordEncoder encoder;
 
     public SecurityConfiguration(UserService userService, Environment environment, BCryptPasswordEncoder encoder) {
         this.userService = userService;
@@ -48,6 +47,7 @@ public class SecurityConfiguration {
                 .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                             auth.requestMatchers(antMatcher("/users")).permitAll();
+                            auth.requestMatchers(antMatcher("/actuator/**")).permitAll();
                             auth.requestMatchers(antMatcher("/users/**")).permitAll();
                             auth.requestMatchers(antMatcher("/h2-console/**")).permitAll();
                         }
