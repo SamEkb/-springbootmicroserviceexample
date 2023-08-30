@@ -4,10 +4,11 @@ import com.kilanov.userswebservice.dto.UserDto;
 import com.kilanov.userswebservice.entity.UserEntity;
 import com.kilanov.userswebservice.repository.UserRepository;
 import com.kilanov.userswebservice.ui.response.AlbumResponse;
+import feign.FeignException;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.ParameterizedTypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,17 +24,21 @@ import static org.modelmapper.convention.MatchingStrategies.STRICT;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final RestTemplate restTemplate;
     private final Environment environment;
+    private final AlbumsServiceClient albumsServiceClient;
 
     public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder encoder, RestTemplate restTemplate,
-                           Environment environment) {
+                           Environment environment, AlbumsServiceClient albumsServiceClient) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.restTemplate = restTemplate;
         this.environment = environment;
+        this.albumsServiceClient = albumsServiceClient;
     }
 
     @Override
@@ -91,19 +96,23 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("User does not exist");
         }
 
-        String albumsUrl = String.format(environment.getProperty("albums.url_path"), userId);
+//        String albumsUrl = String.format(environment.getProperty("albums.url_path"), userId);
+//
+//        var albumsResponse = restTemplate.exchange(
+//                albumsUrl,
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<AlbumResponse>>() {
+//                }
+//        );
 
-        var albumsResponse = restTemplate.exchange(
-                albumsUrl,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<AlbumResponse>>() {
-                }
-        );
+
 
         var result = mapper.map(userEntity, UserDto.class);
 
-        List<AlbumResponse> albums = albumsResponse.getBody();
+        //List<AlbumResponse> albums = albumsResponse.getBody();
+        List<AlbumResponse> albums = albums = albumsServiceClient.getAlbums(userId);
+
         result.setAlbums(albums);
 
         return result;
