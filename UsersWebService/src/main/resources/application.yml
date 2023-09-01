@@ -29,6 +29,9 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 management:
+  tracing:
+    sampling:
+      probability: 1
   health:
     circuit-breakers:
       enabled: true
@@ -41,8 +44,11 @@ management:
       exposure:
         include: "*"
 logging:
+  pattern:
+     level: '%5p [${spring.application.name:}, %X{traceId:-}, %X{spanId:-}]'
   level:
     com.kilanov.userswebservice.service.AlbumsServiceClient: debug
+    com.kilanov.userswebservice.service.UserServiceImpl: debug
 resilience4j:
   circuit-breaker:
     instances:
