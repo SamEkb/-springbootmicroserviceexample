@@ -10,5 +10,5 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 #logging:
-#  pattern:
-#    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+  pattern:
+    level: '%5p [${spring.application.name:}, %X{traceId:-}, %X{spanId:-}]'
