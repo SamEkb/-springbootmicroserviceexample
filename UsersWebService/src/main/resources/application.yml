@@ -29,10 +29,30 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 management:
+  health:
+    circuit-breakers:
+      enabled: true
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
   endpoints:
     web:
       exposure:
-        include: beans, gateway, health, mappings, httpexchanges
+        include: "*"
 logging:
   level:
     com.kilanov.userswebservice.service.AlbumsServiceClient: debug
+resilience4j:
+  circuit-breaker:
+    instances:
+      albums-ws:
+        failure-rate-threshold: 50
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state:
+          units:
+            - 10s
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 2
+        minimum-number-of-calls: 1
+        event-consumer-buffer-size: 10
