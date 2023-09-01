@@ -1,6 +1,6 @@
-spring:
-  config:
-    import: optional:configserver:http://localhost:8012
-  cloud:
-    config:
-      name: config-server
+#spring:
+#  config:
+#    import: optional:configserver:http://localhost:8012
+#  cloud:
+#    config:
+#      name: config-server

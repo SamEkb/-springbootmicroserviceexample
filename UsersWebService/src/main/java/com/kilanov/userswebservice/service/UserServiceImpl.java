@@ -110,8 +110,11 @@ public class UserServiceImpl implements UserService {
 
         var result = mapper.map(userEntity, UserDto.class);
 
+        logger.debug("Before albums were found");
         //List<AlbumResponse> albums = albumsResponse.getBody();
         List<AlbumResponse> albums = albums = albumsServiceClient.getAlbums(userId);
+
+        logger.debug("After albums were found");
 
         result.setAlbums(albums);
 
