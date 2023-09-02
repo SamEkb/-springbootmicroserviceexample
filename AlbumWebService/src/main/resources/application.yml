@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://localhost:8010/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-#logging:
+logging:
+  file:
+    name: albums-ws.log
   pattern:
     level: '%5p [${spring.application.name:}, %X{traceId:-}, %X{spanId:-}]'

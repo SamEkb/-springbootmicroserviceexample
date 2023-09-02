@@ -1,4 +1,4 @@
-package com.kilanov.userswebservice.configurations;
+package com.kilanov.userswebservice.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kilanov.userswebservice.service.UserService;
@@ -6,10 +6,8 @@ import com.kilanov.userswebservice.ui.requests.LoginRequest;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.bouncycastle.math.ec.rfc8032.Ed448;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -44,6 +44,8 @@ management:
       exposure:
         include: "*"
 logging:
+  file:
+    name: users-ws.log
   pattern:
      level: '%5p [${spring.application.name:}, %X{traceId:-}, %X{spanId:-}]'
   level:

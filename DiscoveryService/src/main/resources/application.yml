@@ -1,6 +1,11 @@
 spring:
   application:
     name: discovery-service
+  config:
+    import: optional:configserver:http://localhost:8012
+  cloud:
+    config:
+      name: discovery-service
 eureka:
   instance:
     hostname: localhost

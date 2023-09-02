@@ -1,4 +1,4 @@
-package com.kilanov.userswebservice.configurations;
+package com.kilanov.userswebservice.configuration;
 
 import com.kilanov.userswebservice.service.UserService;
 import org.springframework.context.annotation.Bean;
