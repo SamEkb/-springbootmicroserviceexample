@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Table(name = "users")
@@ -14,29 +15,27 @@ public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
     private long id;
+
     @Column(nullable = false, length = 50)
     private String firstName;
+
     @Column(nullable = false, length = 50)
     private String lastName;
+
     @Column(nullable = false, length = 120, unique = true)
     private String email;
+
     @Column(nullable = false, unique = true)
     private String userId;
+
     @Column(nullable = false)
     private String encryptedPassword;
 
-    public UserEntity() {
-    }
-
-    public UserEntity(long id, String firstName, String lastName, String email, String userId,
-                      String encryptedPassword) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userId = userId;
-        this.encryptedPassword = encryptedPassword;
-    }
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
+    private Collection<RoleEntity> roles;
 
     public long getId() {
         return id;
@@ -84,5 +83,13 @@ public class UserEntity implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+    public Collection<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<RoleEntity> roles) {
+        this.roles = roles;
     }
 }
