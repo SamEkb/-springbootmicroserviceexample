@@ -1,4 +1,4 @@
-package com.kilanov.userswebservice.configuration;
+package com.kilanov.userswebservice.security;
 
 import com.kilanov.userswebservice.service.UserService;
 import org.springframework.context.annotation.Bean;
@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity()
 public class SecurityConfiguration {
     private final UserService userService;
     private final Environment environment;
@@ -42,6 +44,8 @@ public class SecurityConfiguration {
                 environment);
         authenticationFilter.setFilterProcessesUrl(environment.getProperty("login.url_path"));
 
+        AuthorizationFilter authorizationFilter = new AuthorizationFilter(authenticationManager, environment);
+
         return http.csrf(AbstractHttpConfigurer::disable)
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(it -> it.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -53,9 +57,8 @@ public class SecurityConfiguration {
                         }
                 )
                 .addFilter(authenticationFilter)
+                .addFilter(authorizationFilter)
                 .authenticationManager(authenticationManager)
                 .build();
     }
-
-
 }

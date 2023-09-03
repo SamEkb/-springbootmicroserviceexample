@@ -1,6 +1,11 @@
 server:
   port: ${PORT:0}
 spring:
+  config:
+    import: optional:configserver:http://localhost:8012
+  cloud:
+    config:
+      name: albums-ws
   application:
     name: albums-ws
 eureka:

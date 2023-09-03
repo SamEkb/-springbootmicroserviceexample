@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
         logger.debug("Before albums were found");
         //List<AlbumResponse> albums = albumsResponse.getBody();
-        List<AlbumResponse> albums = albums = albumsServiceClient.getAlbums(userId);
+        List<AlbumResponse> albums  = albumsServiceClient.getAlbums(userId);
 
         logger.debug("After albums were found");
 

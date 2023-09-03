@@ -1,4 +1,4 @@
-package com.kilanov.userswebservice.configuration;
+package com.kilanov.userswebservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kilanov.userswebservice.service.UserService;

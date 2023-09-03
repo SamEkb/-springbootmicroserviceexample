@@ -75,3 +75,8 @@ resilience4j:
             - 2s
         enable-exponential-backoff: true
         exponential-backoff-multiplier: 5
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer

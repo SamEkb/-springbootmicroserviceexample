@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.modelmapper.convention.MatchingStrategies.STRICT;
@@ -41,6 +43,14 @@ public class UsersController {
         return ResponseEntity.status(CREATED).body(response);
     }
 
+    /*
+     * PreAuthorize annotation allows spring security check expression before method was executed
+     */
+    //@PreAuthorize("principal == #userId")
+    /*
+      PostAuthorize annotation allows spring security check expression after method was executed
+     */
+    @PostAuthorize("principal == returnObject.getBody().getUserId()")
     @GetMapping(value = "/{userId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserResponse> getUser(@PathVariable String userId) {
         var mapper = new ModelMapper();
