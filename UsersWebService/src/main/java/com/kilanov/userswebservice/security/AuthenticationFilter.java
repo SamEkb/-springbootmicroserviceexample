@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,7 +22,9 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final UserService userService;
@@ -38,12 +41,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                                 HttpServletResponse response
     ) throws AuthenticationException {
         try {
-            LoginRequest loginRequest = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
+            LoginRequest credentials = new ObjectMapper().readValue(request.getInputStream(), LoginRequest.class);
 
             return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
+                            credentials.getEmail(),
+                            credentials.getPassword()
                     )
             );
         } catch (IOException e) {
@@ -64,6 +67,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         SecretKey secretKey = new SecretKeySpec(tokenSecretBytes, SignatureAlgorithm.HS512.getJcaName());
 
         String token = Jwts.builder()
+                .claim("scope", authResult.getAuthorities())
                 .setSubject(userDetails.getUserId())
                 .setExpiration(Date.from(
                         Instant.now().plusMillis(Long.parseLong(environment.getProperty("token.expiration_time"))))

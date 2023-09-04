@@ -1,4 +1,4 @@
-package com.kilanov.userswebservice.security;
+package com.kilanov.albumwebservice.security;
 
 import com.kilanov.jwtauthoritiesparser.JwtClaimsParser;
 import jakarta.servlet.FilterChain;
@@ -66,3 +66,4 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     }
 }
+

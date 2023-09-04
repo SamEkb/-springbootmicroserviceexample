@@ -1,14 +1,17 @@
 package com.kilanov.userswebservice.service;
 
 import com.kilanov.userswebservice.dto.UserDto;
+import com.kilanov.userswebservice.entity.AuthorityEntity;
+import com.kilanov.userswebservice.entity.RoleEntity;
 import com.kilanov.userswebservice.entity.UserEntity;
 import com.kilanov.userswebservice.repository.UserRepository;
 import com.kilanov.userswebservice.ui.response.AlbumResponse;
-import feign.FeignException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,6 +79,17 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("User does not exist");
         }
 
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (RoleEntity role : userEntity.getRoles()) {
+            var authority = new SimpleGrantedAuthority(role.getName());
+            authorities.add(authority);
+
+            for (AuthorityEntity roleAuthority : role.getAuthorities()) {
+                var authorityEntity = new SimpleGrantedAuthority(roleAuthority.getName());
+                authorities.add(authorityEntity);
+            }
+        }
+
         return new User(
                 userEntity.getEmail(),
                 userEntity.getEncryptedPassword(),
@@ -82,12 +97,12 @@ public class UserServiceImpl implements UserService {
                 true,
                 true,
                 true,
-                new ArrayList<>()
+                authorities
         );
     }
 
     @Override
-    public UserDto getUserById(String userId) {
+    public UserDto getUserById(String userId, String authorization) {
         var mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(STRICT);
         UserEntity userEntity = userRepository.getUserEntityByUserId(userId);
@@ -107,17 +122,27 @@ public class UserServiceImpl implements UserService {
 //        );
 
 
-
         var result = mapper.map(userEntity, UserDto.class);
 
         logger.debug("Before albums were found");
         //List<AlbumResponse> albums = albumsResponse.getBody();
-        List<AlbumResponse> albums  = albumsServiceClient.getAlbums(userId);
+        List<AlbumResponse> albums = albumsServiceClient.getAlbums(userId, authorization);
 
         logger.debug("After albums were found");
 
         result.setAlbums(albums);
 
         return result;
+    }
+
+    @Override
+    public void delete(String userId) {
+        var user = userRepository.getUserEntityByUserId(userId);
+
+        if (user == null) {
+            return;
+        }
+
+        userRepository.deleteById(user.getId());
     }
 }

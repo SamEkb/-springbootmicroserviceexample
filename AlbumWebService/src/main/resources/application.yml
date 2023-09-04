@@ -19,3 +19,8 @@ logging:
     name: albums-ws.log
   pattern:
     level: '%5p [${spring.application.name:}, %X{traceId:-}, %X{spanId:-}]'
+authorization:
+  token:
+    header:
+      name: Authorization
+      prefix: Bearer

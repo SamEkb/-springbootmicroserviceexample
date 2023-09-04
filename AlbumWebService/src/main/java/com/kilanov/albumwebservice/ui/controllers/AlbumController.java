@@ -8,10 +8,8 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,18 +32,19 @@ public class AlbumController {
                     MediaType.APPLICATION_JSON_VALUE,
                     MediaType.APPLICATION_XML_VALUE,
             })
+    @PreAuthorize("hasRole('ADMIN')")
     public List<AlbumResponse> userAlbums(@PathVariable String id) {
 
         List<AlbumResponse> returnValue = new ArrayList<>();
 
         List<AlbumEntity> albumsEntities = albumService.getAlbums(id);
 
-        if(albumsEntities == null || albumsEntities.isEmpty())
-        {
+        if (albumsEntities == null || albumsEntities.isEmpty()) {
             return returnValue;
         }
 
-        Type listType = new TypeToken<List<AlbumResponse>>(){}.getType();
+        Type listType = new TypeToken<List<AlbumResponse>>() {
+        }.getType();
 
         returnValue = new ModelMapper().map(albumsEntities, listType);
         logger.info("Returning " + returnValue.size() + " albums");

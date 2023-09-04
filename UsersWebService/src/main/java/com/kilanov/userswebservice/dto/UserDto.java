@@ -1,9 +1,11 @@
 package com.kilanov.userswebservice.dto;
 
+import com.kilanov.userswebservice.entity.RoleEntity;
 import com.kilanov.userswebservice.ui.response.AlbumResponse;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 public class UserDto implements Serializable {
@@ -17,6 +19,7 @@ public class UserDto implements Serializable {
     private String userId;
     private String encryptedPassword;
     private List<AlbumResponse> albums;
+    private Collection<RoleEntity> roles;
 
     public String getFirstName() {
         return firstName;
@@ -72,5 +75,13 @@ public class UserDto implements Serializable {
 
     public void setAlbums(List<AlbumResponse> albums) {
         this.albums = albums;
+    }
+
+    public Collection<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<RoleEntity> roles) {
+        this.roles = roles;
     }
 }
